@@ -61,19 +61,18 @@ public class base64Test {
     public void testEncode_String() {
         System.out.println("encode");
         base64 instance = new base64();
-        // atm tests strings that contain only CAPITAL letters
-        for(int i=0;i<10000;i++) {
-            for(int j=0;j<100;j++) {
+        // tests up to 1000 char string of random characters (32-126 ASCII chars)
+        for(int i=0;i<1000;i++) {
+            for(int j=0;j<3;j++) {
                 String word = "";
                 for(int w=0;w<i;w++) {
-                    word += (char)random(65, 91);
+                    word += (char)random(32, 126);
                 }        
                 String expResult = new String(Base64.encodeBase64(word.getBytes()));
                 String result = instance.encode(word);        
                 assertTrue("Failed, input: "+word+" result: "+result+" expexted result: "+expResult, expResult.equals(result));                
             }
         }
-        // TODO review the generated test code and remove the default call to fail.
         System.out.println("encode was successfull");
     }
     
