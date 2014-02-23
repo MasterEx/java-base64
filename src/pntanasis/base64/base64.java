@@ -47,13 +47,13 @@ public class base64 {
         {
             retval += "==";
         }
+        artificialtailing = 0;
         return retval;
     }
 
     
     public String encode(String word)
     {
-        artificialtailing = 0;
         String retval = encode(bitarray2Integerarray(eightbittosixbit(Integerarray28bitarray(String2Intarray(word)))));
         return retval;
     }
