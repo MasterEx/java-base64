@@ -23,7 +23,7 @@ public class base64 {
         
     }
 
-    public String encode(int[] buffer)
+    private String encode(int[] buffer)
     {
         String retval = "";
         int until = buffer.length;
