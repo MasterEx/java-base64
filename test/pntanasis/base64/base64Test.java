@@ -6,6 +6,11 @@
 
 package pntanasis.base64;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -74,6 +79,61 @@ public class base64Test {
             }
         }
         System.out.println("encode was successfull");
+    }
+    
+    @Test
+    public void testEncode_File() throws FileNotFoundException, IOException {
+        System.out.println("encode (file)");
+        base64 instance = new base64();
+        FileReader file = new FileReader("test.file"); //test file in project root
+        String f = "";
+        int c;
+        while((c = file.read()) != -1) {
+            f += ""+(char)c;
+        }      
+        String expResult = new String(Base64.encodeBase64(f.getBytes()));
+        String result = instance.encode(f);        
+        assertTrue("Failed, result: "+result+" expexted result: "+expResult, expResult.equals(result));        
+        System.out.println("encode (file) was successfull");
+    }
+    
+    @Test
+    public void testEncode_Performance() throws FileNotFoundException, IOException {
+        System.out.println("encode (file)");
+        long start, end;
+        base64 instance = new base64();
+        FileReader file = new FileReader("test.file"); //test file in project root
+        String f = "";
+        int c;
+        while((c = file.read()) != -1) {
+            f += ""+(char)c;
+        }
+        
+        start = System.currentTimeMillis();
+        new String(Base64.encodeBase64(f.getBytes())); 
+        end = System.currentTimeMillis();
+        System.out.println("Process APACHE base64 encoding toke " + (end - start) + " MilliSeconds");
+        start = System.currentTimeMillis();
+        new String(Base64.encodeBase64(f.getBytes())); 
+        end = System.currentTimeMillis();
+        System.out.println("Process APACHE base64 encoding toke " + (end - start) + " MilliSeconds");start = System.currentTimeMillis();
+        new String(Base64.encodeBase64(f.getBytes())); 
+        end = System.currentTimeMillis();
+        System.out.println("Process APACHE base64 encoding toke " + (end - start) + " MilliSeconds");
+        
+        start = System.currentTimeMillis();
+        instance.encode(f);
+        end = System.currentTimeMillis();
+        System.out.println("Process base64 encoding toke " + (end - start) + " MilliSeconds");
+        start = System.currentTimeMillis();
+        instance.encode(f);
+        end = System.currentTimeMillis();
+        System.out.println("Process base64 encoding toke " + (end - start) + " MilliSeconds");start = System.currentTimeMillis();
+        instance.encode(f);
+        end = System.currentTimeMillis();
+        System.out.println("Process base64 encoding toke " + (end - start) + " MilliSeconds");
+        
+        System.out.println("base64 encoding performance test was successfull");
     }
     
     // helper method to produce random number between A-B
