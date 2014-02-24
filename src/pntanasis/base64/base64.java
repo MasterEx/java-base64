@@ -1,5 +1,6 @@
 package pntanasis.base64;
 
+import java.util.BitSet;
 import pntanasis.types.bits;
 
 /**
@@ -10,6 +11,7 @@ import pntanasis.types.bits;
 public class base64 {
 
     private int artificialtailing = 0;
+    private BitSet bits;
 
     protected String[] alphabet = {"A" , "B" , "C" , "D" , "E" , "F" , "G" , "H" ,
         "I" , "J" , "K" , "L" , "M" , "N" , "O" , "P" , "Q" , "R" , "S" , "T" ,
@@ -36,7 +38,8 @@ public class base64 {
             until -= 2;
         }
         for(int i=0;i<until;i++)
-        {         
+        { 
+//            System.out.println("i "+i+" "+buffer[i]);
             retval += alphabet[buffer[i]];
         }
         if(artificialtailing == 1)
@@ -54,7 +57,62 @@ public class base64 {
     
     public String encode(String word)
     {
-        String retval = encode(bitarray2Integerarray(eightbittosixbit(Integerarray28bitarray(String2Intarray(word)))));
+        String retval; //= encode(bitarray2Integerarray(eightbittosixbit(Integerarray28bitarray(String2Intarray(word)))));
+        int[] intarr = String2Intarray(word);
+        int s =0;
+        
+        if((word.length()+1)%3==0) {
+            artificialtailing = 1;
+            s = (1+intarr.length)*8;
+            bits = new BitSet((1+intarr.length)*8);
+            for(int i=intarr.length;i>intarr.length-8;i--)
+                bits.set(bits.length(), false);
+        } else if((word.length()+2)%3==0) {
+            artificialtailing = 2;
+            bits = new BitSet((2+intarr.length)*8);
+            for(int i=intarr.length;i>intarr.length-16;i--)
+                bits.set(bits.length(), false);
+            s = (2+intarr.length)*8;
+        } else {
+            bits = new BitSet(intarr.length*8);
+            s = intarr.length*8;
+        }
+//        System.out.println("length word:"+word.length()+" intarr:"+intarr.length+" bits:"+bits.length()+" "+bits.size()+" "+s);
+        int k = 0;
+        for(int i=0;i<intarr.length;i++) {
+            String b = Integer.toBinaryString(intarr[i]);
+            int st = k;
+//            System.out.println("IN HERE 1 "+b);            
+            for(int j=b.length()-1;j>=0;j--) {
+                if (b.charAt(j) == '1') {
+                    bits.set(k+j+(8-b.length()), true);
+//                    System.out.println("IN HERE 2 "+k+" "+j);  
+                }
+            }
+             k += 8;
+        }
+        retval = "";
+        int reatarr[] = new int[s/6];
+        int j = 0;
+        for(int i=0;i<reatarr.length;i++) {           
+                int r = 0;
+//                System.out.println("r is zero "+r);
+                int p = j;
+//            for(;j<p+6;j++) {
+//                if(bits.get(j)) {
+//                    r += Math.pow(2, (j%6)+2);
+            for(int bla=0;bla<6;bla++) {
+                if(bits.get(j+bla)) {
+                    r += Math.pow(2, 5-bla);
+//                    System.out.println("IN HERE b = "+bla);
+                }
+            }
+            j = j + 6;
+//            System.out.println("IN HERE r = "+r+" "+j);
+//            }
+            reatarr[i] = r;//System.out.println("IN HERE r = "+r);
+        }
+        retval = encode(reatarr);
         return retval;
     }
 
