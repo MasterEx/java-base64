@@ -19,6 +19,8 @@ public class base64 {
         "g" , "h" , "i" , "j" , "k" , "l" , "m" , "n" , "o" , "p" , "q" , "r" ,
         "s" , "t" , "u" , "v" , "w" , "x" , "y" , "z" , "0" , "1" , "2" , "3" ,
         "4" , "5" , "6" , "7" , "8" , "9" , "+" , "/"};
+    
+    private static int[] power = {1,2,4,8,16,32};
 
     public base64()
     {
@@ -103,7 +105,7 @@ public class base64 {
 //                    r += Math.pow(2, (j%6)+2);
             for(int bla=0;bla<6;bla++) {
                 if(bits.get(j+bla)) {
-                    r += Math.pow(2, 5-bla);
+                    r += power[5-bla];//Math.pow(2, 5-bla);
 //                    System.out.println("IN HERE b = "+bla);
                 }
             }
