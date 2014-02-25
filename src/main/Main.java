@@ -5,6 +5,7 @@
 
 package main;
 
+import java.io.UnsupportedEncodingException;
 import org.apache.commons.codec.binary.Base64;
 import pntanasis.base64.base64;
 
@@ -18,7 +19,7 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedEncodingException{
         
             // TODO code application logic here
             base64 coder = new base64();
@@ -34,6 +35,8 @@ public class Main {
             System.out.println(coder.decode("UFhMRVFURUtBVktHREJPT1dBUkVZSE5FVk1FWVlOVEdTQ09UU1ZNSk5HSlVPV09SWURTR01TT1BPV0JOTklPU0R="));
             System.out.println(coder.encode("abc"));
             System.out.println(new String(Base64.encodeBase64("abc".getBytes())));
+            System.out.println(coder.encode("Π"));
+            System.out.println(new String(Base64.encodeBase64("Π".getBytes())));
             // TODO: MAKE THIS WORK!
             //System.out.println("Περικλής");
             //System.out.println(coder.encode("Περικλής"));

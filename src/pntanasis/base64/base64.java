@@ -1,5 +1,6 @@
 package pntanasis.base64;
 
+import java.io.UnsupportedEncodingException;
 import java.util.BitSet;
 
 /**
@@ -23,7 +24,7 @@ public class base64 {
 
     }
 
-    private String encode(int[] buffer) {
+    private String encode(byte[] buffer) {
         String retval = "";
         int until = buffer.length;
         if (artificialtailing == 1) {
@@ -45,16 +46,16 @@ public class base64 {
         return retval;
     }
 
-    public String encode(String word) {
+    public String encode(String word) throws UnsupportedEncodingException {
         BitSet bits;
         String retval;
-        int[] intarr = String2Intarray(word);
+        byte[] intarr = word.getBytes();
         int bitSetSize;
         // calculate the padding
-        if ((word.length() + 1) % 3 == 0) {
+        if ((intarr.length + 1) % 3 == 0) {
             artificialtailing = 1;
             bitSetSize = (1 + intarr.length) * 8;
-        } else if ((word.length() + 2) % 3 == 0) {
+        } else if ((intarr.length + 2) % 3 == 0) {
             artificialtailing = 2;
             bitSetSize = (2 + intarr.length) * 8;
         } else {
@@ -65,18 +66,21 @@ public class base64 {
         int bitSetPointer = 0;
         for (int i = 0; i < intarr.length; i++) {
             String bit8 = Integer.toBinaryString(intarr[i]);
-            for (int j = bit8.length() - 1; j >= 0; j--) {
+            int byteSize = getByteSize(bit8.length());
+            int tmpBitSetPointer = bitSetPointer + 7;
+            for (int j = bit8.length() - 1; j >= bit8.length() - byteSize; j--) {
                 if (bit8.charAt(j) == '1') {
-                    bits.set(bitSetPointer + j + 8 - bit8.length(), true);
+                    bits.set(tmpBitSetPointer, true);
                 }
+                tmpBitSetPointer--;
             }
             bitSetPointer += 8;
         }
         // create and populate the array with the alphabet indexes
-        intarr = new int[bitSetSize / 6];
+        intarr = new byte[bitSetSize / 6];
         bitSetPointer = 0;
         for (int i = 0; i < intarr.length; i++) {
-            int intvalue = 0;
+            byte intvalue = 0;
             for (int j = 0; j < 6; j++) {
                 if (bits.get(bitSetPointer + j)) {
                     intvalue += power[5 - j];
@@ -131,15 +135,6 @@ public class base64 {
         return retval;
     }
 
-    private int[] String2Intarray(String word) {
-        byte[] bbuffer = word.getBytes();
-        int[] ibuffer = new int[bbuffer.length];
-        for (int i = 0; i < bbuffer.length; i++) {
-            ibuffer[i] = (int) bbuffer[i];
-        }
-        return ibuffer;
-    }
-
     private int Char2AlphabetIndex(char c) {
         if (c == '+') {
             return alphabet.length - 2;
@@ -152,5 +147,13 @@ public class base64 {
             return c - '0' + Char2AlphabetIndex('z') + 1;
         }
         return c - 'A';
+    }
+    
+    private int getByteSize(int size) {
+        if( size >= 8) {
+            return 8;
+        } else {
+            return size;
+        }
     }
 }
