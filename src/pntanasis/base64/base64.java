@@ -46,7 +46,7 @@ public class base64 {
         return retval;
     }
 
-    public String encode(String word) throws UnsupportedEncodingException {
+    public String encode(String word) {
         BitSet bits;
         String retval;
         byte[] intarr = word.getBytes();
@@ -95,7 +95,6 @@ public class base64 {
 
     public String decode(String base64) {
         BitSet bits;
-        String retval = "";
         // ignore padding
         if (base64.charAt(base64.length() - 1) == '=') {
             artificialtailing = 1;
@@ -122,17 +121,18 @@ public class base64 {
             bitSetPointer += 6;
         }
         // transform bit set to characters
+        byte[] bytes = new byte[bits.length()/6]; // problem, string may appera bigger - brakes unit testing
+        int bcounter = 0;
         for (int i = 0; i < bits.length(); i += 8) {
-            char c = 0;
             for (int j = 0; j < 8; j++) {
                 if (bits.get(i + j)) {
-                    c += power[7 - j];
+                    bytes[bcounter] += power[7 - j];
                 }
             }
-            retval += "" + c;
+            bcounter++;
         }
         artificialtailing = 0;
-        return retval;
+        return new String(bytes);
     }
 
     private int Char2AlphabetIndex(char c) {

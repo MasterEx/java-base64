@@ -35,7 +35,9 @@ public class Main {
             System.out.println(coder.decode("UFhMRVFURUtBVktHREJPT1dBUkVZSE5FVk1FWVlOVEdTQ09UU1ZNSk5HSlVPV09SWURTR01TT1BPV0JOTklPU0R="));
             System.out.println(coder.encode("abc"));
             System.out.println(new String(Base64.encodeBase64("abc".getBytes())));
-            System.out.println(coder.encode("Π"));
+            System.out.println(coder.encode("Περικλής"));
+            System.out.println(new String(Base64.encodeBase64("Π".getBytes())));
+            System.out.println(coder.decode("zqDOtc+BzrnOus67zq7Pgg=="));
             System.out.println(new String(Base64.encodeBase64("Π".getBytes())));
             // TODO: MAKE THIS WORK!
             //System.out.println("Περικλής");

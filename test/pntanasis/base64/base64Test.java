@@ -9,6 +9,7 @@ package pntanasis.base64;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
