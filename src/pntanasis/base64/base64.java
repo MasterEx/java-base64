@@ -93,24 +93,24 @@ public class base64 {
         BitSet bits;
         String retval = "";
         // ignore padding
-        if (base64.charAt(base64.length()-1) == '=') {
+        if (base64.charAt(base64.length() - 1) == '=') {
             artificialtailing = 1;
-            if(base64.charAt(base64.length()-2) == '=') {
+            if (base64.charAt(base64.length() - 2) == '=') {
                 artificialtailing = 2;
             }
         }
         // create array of alphabet indexes (values)
-        int[] alphabetIndexArray = new int[base64.length()-artificialtailing];
-        for(int i=0;i<base64.length()-artificialtailing;i++) {
+        int[] alphabetIndexArray = new int[base64.length() - artificialtailing];
+        for (int i = 0; i < base64.length() - artificialtailing; i++) {
             alphabetIndexArray[i] = Char2AlphabetIndex(base64.charAt(i));
         }
         // populate the bit set
-        bits = new BitSet(alphabetIndexArray.length*6);
+        bits = new BitSet(alphabetIndexArray.length * 6);
         int bitSetPointer = 0;
         for (int i = 0; i < alphabetIndexArray.length; i++) {
             // an 8-bit with 6 useful bits
             String bit6 = Integer.toBinaryString(alphabetIndexArray[i]);
-            for (int j = bit6.length() - 1, k = 8 ; k>2 && j >= 0 ; j--, k--) {
+            for (int j = bit6.length() - 1, k = 8; k > 2 && j >= 0; j--, k--) {
                 if (bit6.charAt(j) == '1') {
                     bits.set(bitSetPointer + 8 - bit6.length() + j - 2, true);
                 }
@@ -118,15 +118,16 @@ public class base64 {
             bitSetPointer += 6;
         }
         // transform bit set to characters
-        for(int i=0;i<bits.length();i+=8) {
+        for (int i = 0; i < bits.length(); i += 8) {
             char c = 0;
-            for(int j=0;j<8;j++) {
+            for (int j = 0; j < 8; j++) {
                 if (bits.get(i + j)) {
                     c += power[7 - j];
                 }
             }
-            retval += ""+c;
+            retval += "" + c;
         }
+        artificialtailing = 0;
         return retval;
     }
 
@@ -140,13 +141,16 @@ public class base64 {
     }
 
     private int Char2AlphabetIndex(char c) {
-        if (c == 43) {
-            return alphabet.length - 1;
-        } else if (c == 47) {
+        if (c == '+') {
             return alphabet.length - 2;
-        } else if (c >= 97) {
-            return c-71;
+        } else if (c == '/') {
+            return alphabet.length - 1;
+        } else if (c >= 'a') {
+            int x =c - 'A' - 6;
+            return c - 'A' - 6;
+        } else if (c <= '9') {
+            return c - '0' + Char2AlphabetIndex('z') + 1;
         }
-        return c-65;
+        return c - 'A';
     }
 }

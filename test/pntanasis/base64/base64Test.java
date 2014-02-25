@@ -69,7 +69,7 @@ public class base64Test {
             for(int j=0;j<3;j++) {
                 String word = "";
                 for(int w=0;w<i;w++) {
-                    word += (char)random(32, 126);
+                    word += (char)random(32, 127);
                 }        
                 String expResult = new String(Base64.encodeBase64(word.getBytes()));
                 String result = instance.encode(word);        
@@ -91,7 +91,7 @@ public class base64Test {
         }      
         String expResult = new String(Base64.encodeBase64(f.getBytes()));
         String result = instance.encode(f);        
-        assertTrue("Failed, result: "+result+" expexted result: "+expResult, expResult.equals(result));        
+        assertTrue("Failed, result: "+result+" expexted result: "+expResult, expResult.equals(result));
         System.out.println("encode (file) was successfull");
     }
     
@@ -132,6 +132,56 @@ public class base64Test {
         System.out.println("Process base64 encoding toke " + (end - start) + " MilliSeconds");
         
         System.out.println("base64 encoding performance test was successfull");
+    }
+    
+    @Test
+    public void testDecode() throws FileNotFoundException, IOException {
+        System.out.println("decode random strings");
+        base64 instance = new base64();
+        for(int i=0;i<100;i++) {
+            String word = "";
+            int r = random(1,100);
+            for(int j=0;j<r;j++) {
+                word += (char) random(32,127);
+            }
+            String base64 = new String(Base64.encodeBase64(word.getBytes()));
+            String result = instance.decode(base64);
+            assertTrue("Failed, result: "+result+" expexted result: "+word+" base64:"+base64, word.equals(result));
+        }
+    }
+    
+    @Test
+    public void testDecode_Performance() throws FileNotFoundException, IOException {
+        System.out.println("decode file Performance");
+        long start, end;
+        base64 instance = new base64();
+        FileReader file = new FileReader("test.file"); //test file in project root
+        String f = "";
+        int c;
+        while((c = file.read()) != -1) {
+            f += ""+(char)c;
+        }
+        String base64 = new String(Base64.encodeBase64(f.getBytes()));
+        start = System.currentTimeMillis();
+        new String(Base64.decodeBase64(base64.getBytes())); 
+        end = System.currentTimeMillis();
+        System.out.println("Process APACHE base64 decode toke " + (end - start) + " MilliSeconds");
+        new String(Base64.decodeBase64(base64.getBytes())); 
+        end = System.currentTimeMillis();
+        System.out.println("Process APACHE base64 decode toke " + (end - start) + " MilliSeconds");
+        new String(Base64.decodeBase64(base64.getBytes())); 
+        end = System.currentTimeMillis();
+        System.out.println("Process APACHE base64 decode toke " + (end - start) + " MilliSeconds");
+        
+        instance.decode(base64);
+        end = System.currentTimeMillis();
+        System.out.println("Process base64 decode toke " + (end - start) + " MilliSeconds");
+        instance.decode(base64);
+        end = System.currentTimeMillis();
+        System.out.println("Process base64 decode toke " + (end - start) + " MilliSeconds");
+        instance.decode(base64); 
+        end = System.currentTimeMillis();
+        System.out.println("Process base64 decode toke " + (end - start) + " MilliSeconds");
     }
     
     // helper method to produce random number between A-B
