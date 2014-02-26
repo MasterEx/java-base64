@@ -143,11 +143,12 @@ public class base64Test {
             String word = "";
             int r = random(1,100);
             for(int j=0;j<r;j++) {
-                word += (char) random(32,127);
+                word += (char) random(0,255);
             }
             String base64 = new String(Base64.encodeBase64(word.getBytes()));
             String result = instance.decode(base64);
-            assertTrue("Failed, result: "+result+" expexted result: "+word+" base64:"+base64, word.equals(result));
+//            String exRes = new String(Base64.decodeBase64(base64.getBytes()));
+            assertTrue("Failed, result: *"+result+"* (length: "+result.length()+") expexted result: *"+word+"* (length: "+word.length()+") base64:"+base64, word.equals(result));
         }
     }
     

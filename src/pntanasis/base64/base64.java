@@ -120,10 +120,10 @@ public class base64 {
             }
             bitSetPointer += 6;
         }
-        // transform bit set to characters
-        byte[] bytes = new byte[bits.length()/6]; // problem, string may appera bigger - brakes unit testing
+        byte[] bytes = new byte[1+(bits.length()/8)];
+        System.out.println("bytes length: "+bytes.length);
         int bcounter = 0;
-        for (int i = 0; i < bits.length(); i += 8) {
+        for (int i = 0; i < bytes.length*8; i += 8) {
             for (int j = 0; j < 8; j++) {
                 if (bits.get(i + j)) {
                     bytes[bcounter] += power[7 - j];
@@ -132,7 +132,14 @@ public class base64 {
             bcounter++;
         }
         artificialtailing = 0;
-        return new String(bytes);
+        // Most times this produces right output (according to test function - apache common base64
+        // However some times a zero at the end is needed. The visual outcome is the same
+        // Error may happen in case of outcome comparison as happens in the unit test.
+        if(bytes[bytes.length-1] == 0) {
+            return new String(bytes,0,bytes.length-1);
+        } else {
+            return new String(bytes);
+        }
     }
 
     private int Char2AlphabetIndex(char c) {
