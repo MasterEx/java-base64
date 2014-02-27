@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2014 Periklis Ntanasis <pntanasis@gmail.com>
+ * Distributed under the MIT License. See License.txt for more info.
+ */
 package pntanasis.base64;
 
 import java.io.UnsupportedEncodingException;

@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Periklis Ntanasis <pntanasis@gmail.com>
  */
 package main;
 
