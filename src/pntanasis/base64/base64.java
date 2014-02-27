@@ -58,13 +58,10 @@ public class base64 {
         // calculate the padding
         if ((intarr.length + 1) % 3 == 0) {
             artificialtailing = 1;
-            bitSetSize = (1 + intarr.length) * 8;
         } else if ((intarr.length + 2) % 3 == 0) {
             artificialtailing = 2;
-            bitSetSize = (2 + intarr.length) * 8;
-        } else {
-            bitSetSize = intarr.length * 8;
         }
+        bitSetSize = (intarr.length + artificialtailing) * 8;
         bits = new BitSet(bitSetSize);
         // populate the BitSet
         int bitSetPointer = 0;
