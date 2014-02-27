@@ -97,7 +97,7 @@ public class base64 {
         return retval;
     }
 
-    public String decode(String base64) {
+    public byte[] decode(String base64) {
         BitSet bits;
         // ignore padding
         if (base64.charAt(base64.length() - 1) == '=') {
@@ -139,7 +139,7 @@ public class base64 {
         // However some times a zero at the end is needed. The visual outcome is the same
         // Error may happen in case of outcome comparison as happens in the unit test.
         artificialtailing = 0;
-        return new String(bytes, 0, bytes.length);
+        return bytes;
     }
 
     private int Char2AlphabetIndex(char c) {

@@ -102,19 +102,14 @@ public class Main {
     }
 
     private static void decode() throws IOException {
-        char[] buffer = new char[30000];
-        OutputStreamWriter out;
-        try (InputStreamReader in = new InputStreamReader(streamIn)) {
-            out = new OutputStreamWriter(streamOut);
-            int l;
-            while ((l = in.read(buffer)) != -1) {
-                String decodedString = coder.decode(new String(buffer, 0, l).trim());
-                char[] retVal = new char[decodedString.length()];
-                decodedString.getChars(0, decodedString.length(), retVal, 0);
-                out.write(retVal, 0, retVal.length);
-            }
+        byte[] buffer = new byte[30000];
+        int l;
+        while ((l = streamIn.read(buffer)) != -1) {
+            byte[] decodedString = coder.decode(new String(buffer, 0, l).trim());
+            streamOut.write(decodedString, 0, decodedString.length);
         }
-        out.close();
+        streamIn.close();
+        streamOut.close();
     }
 
     private static void encode() throws IOException {
