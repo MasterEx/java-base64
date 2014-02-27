@@ -60,9 +60,10 @@ public class base64Test {
 
     /**
      * Test of encode method, of class base64.
+     * @throws java.io.UnsupportedEncodingException
      */
     @Test
-    public void testEncode_String() {
+    public void testEncode_String() throws UnsupportedEncodingException {
         System.out.println("encode");
         base64 instance = new base64();
         // tests up to 1000 char string of random characters (32-126 ASCII chars)

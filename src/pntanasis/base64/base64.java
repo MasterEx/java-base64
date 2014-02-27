@@ -1,5 +1,6 @@
 package pntanasis.base64;
 
+import java.io.UnsupportedEncodingException;
 import java.util.BitSet;
 
 /**
@@ -23,7 +24,7 @@ public class base64 {
 
     }
 
-    private String encode(byte[] buffer) {
+    private String mapAlphabet(byte[] buffer) {
         String retval = "";
         int until = buffer.length;
         if (artificialtailing == 1) {
@@ -44,11 +45,15 @@ public class base64 {
         artificialtailing = 0;
         return retval;
     }
+    
+    public String encode(String word) throws UnsupportedEncodingException {
+        return encode(word.getBytes("UTF8"));
+    }
 
-    public String encode(String word) {
+    public String encode(byte[] word) {
         BitSet bits;
         String retval;
-        byte[] intarr = word.getBytes();
+        byte[] intarr = word;
         int bitSetSize;
         // calculate the padding
         if ((intarr.length + 1) % 3 == 0) {
@@ -88,14 +93,13 @@ public class base64 {
             bitSetPointer += 6;
             intarr[i] = intvalue;
         }
-        retval = encode(intarr);
+        retval = mapAlphabet(intarr);
         return retval;
     }
 
     public String decode(String base64) {
         BitSet bits;
         // ignore padding
-        System.out.println("base64 = "+base64);
         if (base64.charAt(base64.length() - 1) == '=') {
             artificialtailing = 1;
             if (base64.charAt(base64.length() - 2) == '=') {

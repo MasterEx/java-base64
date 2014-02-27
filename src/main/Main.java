@@ -5,6 +5,7 @@
 
 package main;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import pntanasis.base64.base64;
 
 
@@ -32,8 +34,7 @@ public class Main {
      * @param args the command line arguments
      * @throws java.io.IOException
      */
-    public static void main(String[] args) throws IOException {
-        
+    public static void main(String[] args) throws IOException {        
         int maxArg = args.length;
         try {
             if(!(   args[args.length-1].equals("-d") || 
@@ -103,33 +104,49 @@ public class Main {
     
     private static void decode() throws IOException {
         char[] buffer = new char[30000];
-        InputStreamReader in = new InputStreamReader(streamIn);
-        OutputStreamWriter out = new OutputStreamWriter(streamOut);
-        int l = 0;
-        while((l = in.read(buffer)) != -1) {
-            String decodedString = coder.decode(new String(buffer,0,l).trim());
-            char[] retVal = new char[decodedString.length()];
-            decodedString.getChars(0, decodedString.length(), retVal, 0);
-            out.write(retVal, 0, retVal.length);
+        OutputStreamWriter out;
+        try (InputStreamReader in = new InputStreamReader(streamIn)) {
+            out = new OutputStreamWriter(streamOut);
+            int l;
+            while((l = in.read(buffer)) != -1) {
+                String decodedString = coder.decode(new String(buffer,0,l).trim());
+                char[] retVal = new char[decodedString.length()];
+                decodedString.getChars(0, decodedString.length(), retVal, 0);
+                out.write(retVal, 0, retVal.length);
+            }
         }
-        in.close();
         out.close();
     }
     
     private static void encode() throws IOException {
-        char[] buffer = new char[30000];
-        InputStreamReader in = new InputStreamReader(streamIn);
-        OutputStreamWriter out = new OutputStreamWriter(streamOut);
-        int l = 0;
-        while((l = in.read(buffer)) != -1) {
-            String encodedString = coder.encode(new String(buffer,0,l));
-            char[] retVal = new char[encodedString.length()];
-            encodedString.getChars(0, encodedString.length(), retVal, 0);
-            out.write(retVal, 0, retVal.length);
-        }
-        out.write('\n');
-        in.close();
+        byte[] buffer = new byte[30000];
+        OutputStreamWriter out;
+        int currentCol = 0;
+            out = new OutputStreamWriter(streamOut);
+            int l;
+            while((l = streamIn.read(buffer)) != -1) {
+                String encodedString = coder.encode(Arrays.copyOfRange(buffer,0,l));
+                char[] retVal = new char[encodedString.length()];
+                encodedString.getChars(0, encodedString.length(), retVal, 0);
+                if(wrapCols == 0) {
+                    out.write(retVal, 0, retVal.length);
+                } else {
+                    int dataWritten = 0;
+                    while(dataWritten < retVal.length) {
+                        int dataWrittenInLoop = Math.min(retVal.length-dataWritten, (wrapCols - currentCol));
+                        out.write(retVal, dataWritten, dataWrittenInLoop);
+                        currentCol += dataWrittenInLoop;
+                        dataWritten += dataWrittenInLoop;
+                        if(currentCol >= wrapCols) {
+                            currentCol = 0;
+                            out.write('\n');
+                        }
+                    }
+                }
+            }
+            if(wrapCols != 0) {
+                out.write('\n');
+            }
         out.close();
     }
-
 }
