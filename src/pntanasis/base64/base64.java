@@ -45,7 +45,7 @@ public class base64 {
         artificialtailing = 0;
         return retval;
     }
-    
+
     public String encode(String word) throws UnsupportedEncodingException {
         return encode(word.getBytes("UTF8"));
     }
@@ -125,9 +125,9 @@ public class base64 {
             }
             bitSetPointer += 6;
         }
-        byte[] bytes = new byte[bitSetSize/8];
+        byte[] bytes = new byte[bitSetSize / 8];
         int bcounter = 0;
-        for (int i = 0; i < bytes.length*8; i += 8) {
+        for (int i = 0; i < bytes.length * 8; i += 8) {
             for (int j = 0; j < 8; j++) {
                 if (bits.get(i + j)) {
                     bytes[bcounter] += power[7 - j];
@@ -139,7 +139,7 @@ public class base64 {
         // However some times a zero at the end is needed. The visual outcome is the same
         // Error may happen in case of outcome comparison as happens in the unit test.
         artificialtailing = 0;
-        return new String(bytes,0 ,bytes.length);
+        return new String(bytes, 0, bytes.length);
     }
 
     private int Char2AlphabetIndex(char c) {
@@ -154,9 +154,9 @@ public class base64 {
         }
         return c - 'A';
     }
-    
+
     private int getByteSize(int size) {
-        if( size >= 8) {
+        if (size >= 8) {
             return 8;
         } else {
             return size;
