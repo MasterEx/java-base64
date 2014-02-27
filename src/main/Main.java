@@ -107,7 +107,7 @@ public class Main {
         OutputStreamWriter out = new OutputStreamWriter(streamOut);
         int l = 0;
         while((l = in.read(buffer)) != -1) {
-            String decodedString = coder.decode(new String(buffer,0,l));
+            String decodedString = coder.decode(new String(buffer,0,l).trim());
             char[] retVal = new char[decodedString.length()];
             decodedString.getChars(0, decodedString.length(), retVal, 0);
             out.write(retVal, 0, retVal.length);

@@ -1,6 +1,5 @@
 package pntanasis.base64;
 
-import java.io.UnsupportedEncodingException;
 import java.util.BitSet;
 
 /**
@@ -96,6 +95,7 @@ public class base64 {
     public String decode(String base64) {
         BitSet bits;
         // ignore padding
+        System.out.println("base64 = "+base64);
         if (base64.charAt(base64.length() - 1) == '=') {
             artificialtailing = 1;
             if (base64.charAt(base64.length() - 2) == '=') {
@@ -108,7 +108,8 @@ public class base64 {
             alphabetIndexArray[i] = Char2AlphabetIndex(base64.charAt(i));
         }
         // populate the bit set
-        bits = new BitSet(alphabetIndexArray.length * 6);
+        int bitSetSize = alphabetIndexArray.length * 6;
+        bits = new BitSet(bitSetSize);
         int bitSetPointer = 0;
         for (int i = 0; i < alphabetIndexArray.length; i++) {
             // an 8-bit with 6 useful bits
@@ -120,8 +121,7 @@ public class base64 {
             }
             bitSetPointer += 6;
         }
-        byte[] bytes = new byte[1+(bits.length()/8)];
-        System.out.println("bytes length: "+bytes.length);
+        byte[] bytes = new byte[bitSetSize/8];
         int bcounter = 0;
         for (int i = 0; i < bytes.length*8; i += 8) {
             for (int j = 0; j < 8; j++) {
@@ -131,15 +131,11 @@ public class base64 {
             }
             bcounter++;
         }
-        artificialtailing = 0;
         // Most times this produces right output (according to test function - apache common base64
         // However some times a zero at the end is needed. The visual outcome is the same
         // Error may happen in case of outcome comparison as happens in the unit test.
-        if(bytes[bytes.length-1] == 0) {
-            return new String(bytes,0,bytes.length-1);
-        } else {
-            return new String(bytes);
-        }
+        artificialtailing = 0;
+        return new String(bytes,0 ,bytes.length);
     }
 
     private int Char2AlphabetIndex(char c) {
@@ -148,7 +144,6 @@ public class base64 {
         } else if (c == '/') {
             return alphabet.length - 1;
         } else if (c >= 'a') {
-            int x =c - 'A' - 6;
             return c - 'A' - 6;
         } else if (c <= '9') {
             return c - '0' + Char2AlphabetIndex('z') + 1;
