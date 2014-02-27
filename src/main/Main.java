@@ -8,7 +8,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
@@ -82,7 +81,11 @@ public class Main {
         }
 
         if (decode) {
-            decode();
+            if(ignoreGarbage) {
+                decodeIgnore();
+            } else {
+                decode();
+            }
         } else {
             encode();
         }
@@ -106,6 +109,30 @@ public class Main {
         int l;
         while ((l = streamIn.read(buffer)) != -1) {
             byte[] decodedString = coder.decode(new String(buffer, 0, l).trim());
+            streamOut.write(decodedString, 0, decodedString.length);
+        }
+        streamIn.close();
+        streamOut.close();
+    }
+    
+    private static void decodeIgnore() throws IOException {
+        String triplet = "";
+        int i;
+        while ((i = streamIn.read()) != -1) {
+            char c = (char) i;
+            if((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || 
+                    (c >='0' && c<= '9') || 
+                    c== '=' || c == '+' || c== '/') {
+                triplet += (char)c;
+            }
+            if(triplet.length() == 30000) {
+                byte[] decodedString = coder.decode(triplet);
+                streamOut.write(decodedString, 0, decodedString.length);
+                triplet = "";
+            }
+        }
+        if(triplet.length() > 0) {
+            byte[] decodedString = coder.decode(triplet);
             streamOut.write(decodedString, 0, decodedString.length);
         }
         streamIn.close();
