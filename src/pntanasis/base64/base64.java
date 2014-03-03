@@ -136,9 +136,6 @@ public class base64 {
             }
             bcounter++;
         }
-        // Most times this produces right output (according to test function - apache common base64
-        // However some times a zero at the end is needed. The visual outcome is the same
-        // Error may happen in case of outcome comparison as happens in the unit test.
         artificialtailing = 0;
         return bytes;
     }
