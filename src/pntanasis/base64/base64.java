@@ -70,16 +70,9 @@ public class base64 {
         // populate the BitSet
         int bitSetPointer = 0;
         for (int i = 0; i < intarr.length; i++) {
-            String bit8 = Integer.toBinaryString(intarr[i]);
-            int byteSize = getByteSize(bit8.length());
-            int tmpBitSetPointer = bitSetPointer + 7;
-            for (int j = bit8.length() - 1; j >= bit8.length() - byteSize; j--) {
-                if (bit8.charAt(j) == '1') {
-                    bits.set(tmpBitSetPointer, true);
-                }
-                tmpBitSetPointer--;
+            for(int j=7;j >= 0;j--) {
+                bits.set(bitSetPointer++,(power[j] & intarr[i]) != 0);
             }
-            bitSetPointer += 8;
         }
         // create and populate the array with the alphabet indexes
         intarr = new byte[bitSetSize / 6];
