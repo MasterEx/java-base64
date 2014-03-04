@@ -15,6 +15,7 @@ code is well written and it will help you better understand base64!
 So, in that case have a nice reading :)
 
 Note that the base64 client included in the package is pretty naive and
-doesn't perform well especialy due to stream IO. I do not intend to rewrite
-it as it out of this projects scope but fill free to send me a better
-implementation. If it is better I might include it instead of the current :)
+doesn't perform well especially due to stream IO. I do not intend to rewrite
+it as it is out of this projects scope but fill free to send me a better
+implementation. If it is actually better I might include it instead of
+the current :)
