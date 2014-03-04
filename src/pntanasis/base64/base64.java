@@ -70,8 +70,8 @@ public class base64 {
         // populate the BitSet
         int bitSetPointer = 0;
         for (int i = 0; i < intarr.length; i++) {
-            for(int j=7;j >= 0;j--) {
-                bits.set(bitSetPointer++,(power[j] & intarr[i]) != 0);
+            for (int j = 7; j >= 0; j--) {
+                bits.set(bitSetPointer++, (power[j] & intarr[i]) != 0);
             }
         }
         // create and populate the array with the alphabet indexes
@@ -110,14 +110,9 @@ public class base64 {
         bits = new BitSet(bitSetSize);
         int bitSetPointer = 0;
         for (int i = 0; i < alphabetIndexArray.length; i++) {
-            // an 8-bit with 6 useful bits
-            String bit6 = Integer.toBinaryString(alphabetIndexArray[i]);
-            for (int j = bit6.length() - 1, k = 8; k > 2 && j >= 0; j--, k--) {
-                if (bit6.charAt(j) == '1') {
-                    bits.set(bitSetPointer + 8 - bit6.length() + j - 2, true);
-                }
+            for (int j = 5; j >= 0; j--) {
+                bits.set(bitSetPointer++, (power[j] & alphabetIndexArray[i]) != 0);
             }
-            bitSetPointer += 6;
         }
         byte[] bytes = new byte[bitSetSize / 8];
         int bcounter = 0;
@@ -144,13 +139,5 @@ public class base64 {
             return c - '0' + Char2AlphabetIndex('z') + 1;
         }
         return c - 'A';
-    }
-
-    private int getByteSize(int size) {
-        if (size >= 8) {
-            return 8;
-        } else {
-            return size;
-        }
     }
 }
